@@ -14,6 +14,7 @@ export const api = (request: Request, data?: Record<string, unknown>) => {
     case "POST":
       todos.push(data as Todo)
       body = data
+      status = 201
       break;
     case "DELETE":
       todos = todos.filter(todo => todo.uid !== request.params.uid)
@@ -28,13 +29,14 @@ export const api = (request: Request, data?: Record<string, unknown>) => {
         return todo
       })
       status = 200
+      body = todos.find(todo => todo.uid === request.params.uid)
       break;
   
     default:
       break;
   }
 
-  if (request.method !== "GET") {
+  if (request.method !== "GET" && request.headers.accept !== "application/json") {
     return {
       status: 303,
       headers: {
